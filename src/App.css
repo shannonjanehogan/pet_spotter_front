@@ -4,7 +4,6 @@
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
   height: 12vmin;
   pointer-events: none;
   padding-right: 4vmin;
@@ -47,4 +46,14 @@
 
 footer {
   font-size: 10px;
+}
+
+/* Modals */
+
+.modal-content {
+  font-family: Montserrat
+}
+
+.modal-dialog {
+  max-width: 90% !important
 }

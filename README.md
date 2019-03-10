@@ -1,4 +1,19 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+![top-img](./src/images/top-img.PNG "Top Image")
+
+This front-end project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Setup
+
+If you don't already have npm installed on your machine, make sure to do so.
+
+Navigate to the project folder, and install react and several other dependencies:
+
+```
+npm install react
+npm install react-bootstrap
+npm install react-dom
+```
 
 ## Available Scripts
 

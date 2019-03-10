@@ -1,33 +1,64 @@
 .App {
+  font-family: Montserrat;
   text-align: center;
 }
 
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
+  height: 12vmin;
   pointer-events: none;
+  padding-right: 4vmin;
+  padding-left: 4vmin;
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  min-height: 30vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  font-size: 80px;
+  color: #00B1A3;
+}
+
+.App-body {
+  font-size: 30px;
+  color: #00B1A3;
+}
+
+.Buttons-text {
+  font-size: 60px;
 }
 
 .App-link {
-  color: #61dafb;
+  color: #00B1A3;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.btn-toolbar {
+  display: flex;
+  justify-content: center !important;
+}
+
+.btn-info {
+  font-size: 20px !important;
+  background-color: #00B1A3 !important;
+  border-color: #00B1A3 !important;
+  margin: 5px;
+}
+
+footer {
+  font-size: 10px;
+}
+
+/* Modals */
+
+.modal-content {
+  font-family: Montserrat
+}
+
+.modal-dialog {
+  max-width: 90% !important
+}
+
+.btn-primary {
+  margin-top: 10px;
+  margin-left: 10px;
 }

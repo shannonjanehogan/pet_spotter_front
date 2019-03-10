@@ -57,3 +57,8 @@ footer {
 .modal-dialog {
   max-width: 90% !important
 }
+
+.btn-primary {
+  margin-top: 10px;
+  margin-left: 10px;
+}

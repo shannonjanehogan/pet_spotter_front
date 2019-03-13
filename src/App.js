@@ -10,6 +10,7 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
+import Table from 'react-bootstrap/Table';
 import ReactDOM from 'react-dom';
 
 const BROADWAY_WEST_PHONE  = "6045550000";
@@ -291,16 +292,25 @@ class TaxReceiptForm extends React.Component {
 /*      OWNERS      */
 
 class ViewAllPets extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = {
+      data: []
+    };
+  }
+
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
 
     console.log("Request for ViewAllPets");
 
     // TODO: Replace mock request with real back-end request
-    let response = Mock.getAllPets();
+    // Expect that the back-end request returns a Promise with
+    //   an array of objects with necessary info
+    let response = await Mock.getAllPets();
     this.renderResponse(response);
   }
 
@@ -309,23 +319,67 @@ class ViewAllPets extends React.Component {
    * @param response
    */
   renderResponse(response) {
-    // TODO
+    console.log(response);
+    this.setState({data: response});
+    ReactDOM.findDOMNode(this.refs.tablePetsAll).style="display: table";
   }
 
   render() {
     return(
-        <Form onSubmit={e => this.handleSubmit(e)}>
-          <Button type="submit">View all pets</Button>
-        </Form>
+        <div>
+          <Form onSubmit={e => this.handleSubmit(e)}>
+            <Button type="submit">View all pets</Button>
+          </Form>
+
+          <Table ref={"tablePetsAll"} striped hover>
+            <thead>
+            <tr>
+              <th>Housed at</th>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Weight</th>
+              <th>Gender</th>
+              <th>Species</th>
+              <th>Breed</th>
+              <th>Good with kids?</th>
+              <th>Good with cats?</th>
+              <th>Good with dogs?</th>
+            </tr>
+            </thead>
+            <tbody>{this.state.data.map(function(item, key) {
+              return (
+                  <tr key = {key}>
+                    <td>{item.sName}</td>
+                    <td>{item.aName}</td>
+                    <td>{item.age}</td>
+                    <td>{item.weight}</td>
+                    <td>{item.gender}</td>
+                    <td>{item.species}</td>
+                    <td>{item.breed}</td>
+                    <td>{(item.goodWithKids) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodWithCats) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodWithDogs) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                  </tr>
+              )
+            })}</tbody>
+          </Table>
+        </div>
     );
   }
 }
 
 class ViewPetsByShelter extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = {
+      data: []
+    };
+  }
+
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
     this.request = {
       SPhone: ReactDOM.findDOMNode(this.refs.formPetsByShelter).value
@@ -335,7 +389,9 @@ class ViewPetsByShelter extends React.Component {
     console.log(this.request);
 
     // TODO: Replace mock request with real back-end request
-    let response = Mock.getPetsByShelter(this.request);
+    // Expect that the back-end request returns a Promise with
+    //   an array of objects with necessary info
+    let response = await Mock.getPetsByShelter(this.request);
     this.renderResponse(response);
   }
 
@@ -344,24 +400,59 @@ class ViewPetsByShelter extends React.Component {
    * @param response
    */
   renderResponse(response) {
-    // TODO
+    console.log(response);
+    this.setState({data: response});
+    ReactDOM.findDOMNode(this.refs.tablePetsByShelter).style="display: table";
   }
 
   render() {
     return(
-        <Form onSubmit={e => this.handleSubmit(e)}>
-          <Form.Group>
-            <Form.Label>Choose a shelter</Form.Label>
-            <Form.Control ref="formPetsByShelter" as="select">
-              <option value={BROADWAY_WEST_PHONE}>Broadway West</option>
-              <option value={RICHMOND_SOUTH_PHONE}>Richmond South</option>
-              <option value={BURNABY_PHONE}>Burnaby</option>
-              <option value={DELTA_PHONE}>Delta</option>
-              <option value={SURREY_SOUTH_PHONE}>Surrey South</option>
-            </Form.Control>
-          </Form.Group>
-          <Button type="submit">View pets by selected shelter</Button>
-        </Form>
+        <div>
+          <Form onSubmit={e => this.handleSubmit(e)}>
+            <Form.Group>
+              <Form.Label>Choose a shelter</Form.Label>
+              <Form.Control ref="formPetsByShelter" as="select">
+                <option value={BROADWAY_WEST_PHONE}>Broadway West</option>
+                <option value={RICHMOND_SOUTH_PHONE}>Richmond South</option>
+                <option value={BURNABY_PHONE}>Burnaby</option>
+                <option value={DELTA_PHONE}>Delta</option>
+                <option value={SURREY_SOUTH_PHONE}>Surrey South</option>
+              </Form.Control>
+            </Form.Group>
+            <Button type="submit">View pets by selected shelter</Button>
+          </Form>
+
+          <Table ref={"tablePetsByShelter"} striped hover>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Weight</th>
+                <th>Gender</th>
+                <th>Species</th>
+                <th>Breed</th>
+                <th>Good with kids?</th>
+                <th>Good with cats?</th>
+                <th>Good with dogs?</th>
+              </tr>
+            </thead>
+            <tbody>{this.state.data.map(function(item, key) {
+              return (
+                  <tr key = {key}>
+                    <td>{item.aName}</td>
+                    <td>{item.age}</td>
+                    <td>{item.weight}</td>
+                    <td>{item.gender}</td>
+                    <td>{item.species}</td>
+                    <td>{item.breed}</td>
+                    <td>{(item.goodWithKids) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodWithCats) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodWithDogs) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                  </tr>
+              )
+            })}</tbody>
+          </Table>
+        </div>
     );
   }
 }

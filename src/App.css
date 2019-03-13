@@ -63,6 +63,8 @@ footer {
   margin-left: 10px;
 }
 
+/* Tables */
+
 Table {
   display: none;
   margin-top: 10px;
@@ -76,4 +78,22 @@ Table {
 
 .red-text {
   color: red;
+}
+
+/* Tax receipt stuff */
+
+.tax-receipt-text {
+  display: none;
+  text-align: center;
+  font-weight: bold;
+  padding: 50px 0;
+  vertical-align: center;
+}
+
+.tax-receipt-text img {
+  max-height: 150px;
+}
+
+.tax-receipt-text h3 {
+  text-decoration: underline;
 }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import cat from './images/cat.svg';
 import dog from './images/dog.svg';
+import logo from './images/top-img.PNG';
 import './App.css';
 import Mock from './Mock';
 import Button from 'react-bootstrap/Button';
@@ -249,10 +250,23 @@ class DonationForm extends React.Component {
 }
 
 class TaxReceiptForm extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = {
+      data: {
+        cName: null,
+        total: 0,
+      },
+    };
+
+    let date = new Date();
+    this.setState({date: date});
+  }
+
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
     this.request = {
       cPhone: ReactDOM.findDOMNode(this.refs.formTaxReceiptPhone).value
@@ -262,7 +276,7 @@ class TaxReceiptForm extends React.Component {
     console.log(this.request);
 
     // TODO: Replace mock request with real back-end request
-    let response = Mock.getTaxReceipt(this.request);
+    let response = await Mock.getTaxReceipt(this.request);
     this.renderResponse(response);
   }
 
@@ -271,18 +285,31 @@ class TaxReceiptForm extends React.Component {
    * @param response
    */
   renderResponse(response) {
-    // TODO
+    console.log(response);
+    this.setState({data: response});
+    ReactDOM.findDOMNode(this.refs.taxReceiptText).style="display: block";
   }
 
   render() {
+    let d = new Date();
     return(
-        <Form onSubmit={e => this.handleSubmit(e)}>
-          <Form.Group>
-            <Form.Label>Phone number</Form.Label>
-            <Form.Control ref="formTaxReceiptPhone" type="phone-number" placeholder="7785555555" required/>
-          </Form.Group>
-          <Button type="submit">Get my tax receipt for the current year</Button>
-        </Form>
+        <div>
+          <Form onSubmit={e => this.handleSubmit(e)}>
+            <Form.Group>
+              <Form.Label>Phone number</Form.Label>
+              <Form.Control ref="formTaxReceiptPhone" type="phone-number" placeholder="7785555555" required/>
+            </Form.Group>
+            <Button type="submit">Get my tax receipt for 2019</Button>
+          </Form>
+
+          <div className={"tax-receipt-text"} ref={"taxReceiptText"}>
+            <img src={logo} alt="receipt-header" />
+            <h3>Official donation receipt for tax purposes</h3>
+            <h6>Date issued: {d.toDateString()}</h6>
+            <br/>
+            <p>{this.state.data.cName} has donated ${this.state.data.total.toFixed(2)} to animal shelters in 2019.</p>
+          </div>
+        </div>
     );
   }
 }
@@ -513,16 +540,23 @@ class DeleteDonation extends React.Component {
 }
 
 class ViewPickupTimes extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = {
+      data: []
+    };
+  }
+
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
 
     console.log("Request for ViewPickupTimes");
 
     // TODO: Replace mock request with real back-end request
-    let response = Mock.getPickupTimes();
+    let response = await Mock.getPickupTimes();
     this.renderResponse(response);
   }
 
@@ -531,90 +565,173 @@ class ViewPickupTimes extends React.Component {
    * @param response
    */
   renderResponse(response) {
-    // TODO
+    console.log(response);
+    this.setState({data: response});
+    ReactDOM.findDOMNode(this.refs.tablePickupTimes).style="display: table";
   }
 
   render() {
     return(
-        <Form onSubmit={e => this.handleSubmit(e)}>
-          <Button type="submit">View pickup times</Button>
-        </Form>
+        <div>
+          <Form onSubmit={e => this.handleSubmit(e)}>
+            <Button type="submit">View pickup times</Button>
+          </Form>
+
+          <Table ref={"tablePickupTimes"} striped hover>
+            <thead>
+            <tr>
+              <th>Shelter</th>
+              <th>Client</th>
+              <th>Animal name</th>
+              <th>Animal license number</th>
+              <th>Pickup date</th>
+              <th>Pickup time</th>
+            </tr>
+            </thead>
+            <tbody>{this.state.data.map(function(item, key) {
+              return (
+                  <tr key = {key}>
+                    <td>{item.sName}</td>
+                    <td>{item.cName}</td>
+                    <td>{item.aName}</td>
+                    <td>{item.licenseNo}</td>
+                    <td>{item.pickupDate}</td>
+                    <td>{item.pickupTime}</td>
+                  </tr>
+              )
+            })}</tbody>
+          </Table>
+        </div>
     );
   }
 }
 
 class TotalDonationsByShelter extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = {
+      data: []
+    };
+  }
+
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
-    this.request = {
-      sPhone: ReactDOM.findDOMNode(this.refs.formDonationByShelter).value
-    };
 
     console.log("Request for TotalDonationsByShelter");
-    console.log(this.request);
 
     // TODO: Replace mock request with real back-end request
-    let response = Mock.getDonationsByShelter(this.request);
+    let response = await Mock.getDonationsByShelter();
     this.renderResponse(response);
   }
 
   /**
    * Handle and render response
+   *
+   * Response is an array is made of five objects containing:
+   * - sName: string (one of ["Broadway West", "Richmond South", "Burnaby", "Delta", "Surrey South"])
+   * - totalAmount: float
    * @param response
    */
   renderResponse(response) {
-    // TODO
+    console.log(response);
+    this.setState({data: response});
+    ReactDOM.findDOMNode(this.refs.tableDonationsByShelter).style="display: table";
   }
 
   render() {
     return(
-        <Form onSubmit={e => this.handleSubmit(e)}>
-          <Form.Group>
-            <Form.Label>Choose a shelter</Form.Label>
-            <Form.Control ref="formDonationByShelter" as="select">
-              <option value={BROADWAY_WEST_PHONE}>Broadway West</option>
-              <option value={RICHMOND_SOUTH_PHONE}>Richmond South</option>
-              <option value={BURNABY_PHONE}>Burnaby</option>
-              <option value={DELTA_PHONE}>Delta</option>
-              <option value={SURREY_SOUTH_PHONE}>Surrey South</option>
-            </Form.Control>
-          </Form.Group>
-          <Button type="submit">View total donations by shelter</Button>
-        </Form>
+        <div>
+          <Form onSubmit={e => this.handleSubmit(e)}>
+            <Button type="submit">View total donations each shelter has received</Button>
+          </Form>
+
+          <Table ref={"tableDonationsByShelter"} striped hover>
+            <thead>
+            <tr>
+              <th>Shelter</th>
+              <th>Total donations received</th>
+            </tr>
+            </thead>
+            <tbody>{this.state.data.map(function(item, key) {
+              return (
+                  <tr key = {key}>
+                    <td>{item.sName}</td>
+                    <td>{item.totalAmount.toFixed(2)}</td>
+                  </tr>
+              )
+            })}</tbody>
+          </Table>
+        </div>
     );
   }
 }
 
 class PreferredDonors extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = {
+      data: []
+    };
+  }
+
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
 
     console.log("Request for PreferredDonors");
 
     // TODO: Replace mock request with real back-end request
-    let response = Mock.getEmptyResponse(null);
+    let response = await Mock.getPreferredDonors();
     this.renderResponse(response);
   }
 
   /**
-   * Handle and render response
+   * Handle and render response.  Expect that the back-end request returns a Promise with
+   * an array of objects with necessary info
+   *
+   * Array is made of of objects containing:
+   * - cName: string
+   * - cEmail: string
+   * - cPhone: string
    * @param response
    */
   renderResponse(response) {
-    // TODO
+    console.log(response);
+    this.setState({data: response});
+    ReactDOM.findDOMNode(this.refs.tablePreferredDonors).style="display: table";
   }
 
   render() {
     return(
-        <Form onSubmit={e => this.handleSubmit(e)}>
-          <Button type="submit">View preferred donors</Button>
-        </Form>
+        <div>
+          <Form onSubmit={e => this.handleSubmit(e)}>
+            <Button type="submit">View preferred donors</Button>
+          </Form>
+
+          <Table ref={"tablePreferredDonors"} striped hover>
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+            </tr>
+            </thead>
+            <tbody>{this.state.data.map(function(item, key) {
+              return (
+                  <tr key = {key}>
+                    <td>{item.cName}</td>
+                    <td>{item.cEmail}</td>
+                    <td>{item.cPhone}</td>
+                  </tr>
+              )
+            })}</tbody>
+          </Table>
+        </div>
     );
   }
 }

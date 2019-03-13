@@ -52,7 +52,7 @@ class ClientInfoForm extends React.Component {
       this.setState({ validated: true });
 
       this.request = {
-        CPhone: ReactDOM.findDOMNode(this.refs.formClientPhone).value,
+        cPhone: ReactDOM.findDOMNode(this.refs.formClientPhone).value,
       };
 
       let cName       = ReactDOM.findDOMNode(this.refs.formClientName).value;
@@ -64,14 +64,14 @@ class ClientInfoForm extends React.Component {
       let cPostalCode = ReactDOM.findDOMNode(this.refs.formClientPostalCode).value;
       let petsOwned   = ReactDOM.findDOMNode(this.refs.formClientPetsOwned).value;
 
-      if (cName !== "")       {this.request.CName = cName;}
-      if (cEmail !== "")      {this.request.CEmail = cEmail;}
-      if (cHouseNo !== "")    {this.request.CHouseNo = Number(cHouseNo);}
-      if (cStreet !== "")     {this.request.CStreet = cStreet;}
-      if (city !== "")        {this.request.City = city;}
-      if (province !== "")    {this.request.Province = province;}
-      if (cPostalCode !== "") {this.request.CPostalCode = cPostalCode;}
-      if (petsOwned !== "")   {this.request.PetsOwned = Number(petsOwned);}
+      if (cName !== "")       {this.request.cName = cName;}
+      if (cEmail !== "")      {this.request.cEmail = cEmail;}
+      if (cHouseNo !== "")    {this.request.cHouseNo = Number(cHouseNo);}
+      if (cStreet !== "")     {this.request.cStreet = cStreet;}
+      if (city !== "")        {this.request.city = city;}
+      if (province !== "")    {this.request.province = province;}
+      if (cPostalCode !== "") {this.request.cPostalCode = cPostalCode;}
+      if (petsOwned !== "")   {this.request.petsOwned = Number(petsOwned);}
 
       console.log("Request for ClientInfoForm");
       console.log(this.request);
@@ -185,11 +185,11 @@ class DonationForm extends React.Component {
       let description = ReactDOM.findDOMNode(this.refs.formDonationDescription).value;
 
       this.request = {
-        CPhone: ReactDOM.findDOMNode(this.refs.formDonationPhone).value,
-        Amount: amount,
-        SPhone: ReactDOM.findDOMNode(this.refs.formDonationShelter).value,
-        NameToCredit: (nameToCredit === "") ? "Anonymous" : nameToCredit,
-        Description: (description === "") ? null : description
+        cPhone: ReactDOM.findDOMNode(this.refs.formDonationPhone).value,
+        amount: amount,
+        sPhone: ReactDOM.findDOMNode(this.refs.formDonationShelter).value,
+        nameToCredit: (nameToCredit === "") ? "Anonymous" : nameToCredit,
+        description: (description === "") ? null : description
       };
 
       console.log("Request for DonationForm");
@@ -255,7 +255,7 @@ class TaxReceiptForm extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     this.request = {
-      CPhone: ReactDOM.findDOMNode(this.refs.formTaxReceiptPhone).value
+      cPhone: ReactDOM.findDOMNode(this.refs.formTaxReceiptPhone).value
     };
 
     console.log("Request for TaxReceiptForm");
@@ -382,7 +382,7 @@ class ViewPetsByShelter extends React.Component {
   async handleSubmit(e) {
     e.preventDefault();
     this.request = {
-      SPhone: ReactDOM.findDOMNode(this.refs.formPetsByShelter).value
+      sPhone: ReactDOM.findDOMNode(this.refs.formPetsByShelter).value
     };
 
     console.log("Request for ViewPetsByShelter");
@@ -484,7 +484,7 @@ class DeleteDonation extends React.Component {
       this.setState({ validated: true });
 
       this.request = {
-        TransactionID: ReactDOM.findDOMNode(this.refs.formDeleteDonationID).value,
+        transactionID: ReactDOM.findDOMNode(this.refs.formDeleteDonationID).value,
       };
 
       console.log("Request for DeleteDonation");
@@ -550,7 +550,7 @@ class TotalDonationsByShelter extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     this.request = {
-      SPhone: ReactDOM.findDOMNode(this.refs.formDonationByShelter).value
+      sPhone: ReactDOM.findDOMNode(this.refs.formDonationByShelter).value
     };
 
     console.log("Request for TotalDonationsByShelter");

@@ -12,11 +12,7 @@ If you don't already have npm installed on your machine, make sure to do so.
 
 Navigate to the project folder.  Install React and several other dependencies:
 
-```
-npm install react
-npm install react-bootstrap
-npm install react-dom
-```
+`npm install`
 
 In the project directory, you can run:
 

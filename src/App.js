@@ -286,7 +286,7 @@ class TaxReceiptForm extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response});
+    this.setState({data: response.body});
     ReactDOM.findDOMNode(this.refs.taxReceiptText).style="display: block";
   }
 
@@ -347,7 +347,7 @@ class ViewAllPets extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response});
+    this.setState({data: response.body});
     ReactDOM.findDOMNode(this.refs.tablePetsAll).style="display: table";
   }
 
@@ -428,7 +428,7 @@ class ViewPetsByShelter extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response});
+    this.setState({data: response.body});
     ReactDOM.findDOMNode(this.refs.tablePetsByShelter).style="display: table";
   }
 
@@ -566,7 +566,7 @@ class ViewPickupTimes extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response});
+    this.setState({data: response.body});
     ReactDOM.findDOMNode(this.refs.tablePickupTimes).style="display: table";
   }
 
@@ -584,7 +584,6 @@ class ViewPickupTimes extends React.Component {
               <th>Client</th>
               <th>Animal name</th>
               <th>Animal license number</th>
-              <th>Pickup date</th>
               <th>Pickup time</th>
             </tr>
             </thead>
@@ -595,7 +594,6 @@ class ViewPickupTimes extends React.Component {
                     <td>{item.cName}</td>
                     <td>{item.aName}</td>
                     <td>{item.licenseNo}</td>
-                    <td>{item.pickupDate}</td>
                     <td>{item.pickupTime}</td>
                   </tr>
               )
@@ -637,7 +635,7 @@ class TotalDonationsByShelter extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response});
+    this.setState({data: response.body});
     ReactDOM.findDOMNode(this.refs.tableDonationsByShelter).style="display: table";
   }
 
@@ -702,7 +700,7 @@ class PreferredDonors extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response});
+    this.setState({data: response.body});
     ReactDOM.findDOMNode(this.refs.tablePreferredDonors).style="display: table";
   }
 

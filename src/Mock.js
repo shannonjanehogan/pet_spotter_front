@@ -23,8 +23,11 @@ export default class Mock {
     return new Promise(function(resolve, reject) {
       setTimeout(() => {
         resolve({
-          cName: "Hazra Imran",
-          total: 450.66
+          code: 200,
+          body: {
+            cName: "Hazra Imran",
+            total: 450.66
+          }
         });
       }, 1000);
     });
@@ -48,7 +51,10 @@ export default class Mock {
   static getAllPets() {
     return new Promise(function(resolve, reject) {
       setTimeout(() => {
-        resolve([
+        resolve({
+            code: 200,
+            body:
+            [
           {
             sName: "Broadway West",
             aName: "Toby",
@@ -85,7 +91,7 @@ export default class Mock {
             goodWithCats: true,
             goodWithDogs: false
           },
-        ]);
+        ]});
       }, 1000);
     });
   }
@@ -107,7 +113,9 @@ export default class Mock {
   static getPetsByShelter(request) {
     return new Promise(function(resolve, reject) {
       setTimeout(() => {
-        resolve([
+        resolve(
+            { code: 200,
+              body: [
           {
             aName: "Toby",
             age: 3,
@@ -130,7 +138,7 @@ export default class Mock {
             goodWithCats: true,
             goodWithDogs: true
           },
-        ]);
+        ]});
       }, 1000);
     });
   }
@@ -145,7 +153,7 @@ export default class Mock {
   static getDonationsByShelter() {
     return new Promise(function(resolve, reject) {
       setTimeout(() => {
-        resolve([
+        resolve({code: 200, body: [
           {
             sName: "Broadway West",
             totalAmount: 1000.66,
@@ -166,7 +174,7 @@ export default class Mock {
             sName: "Surrey South",
             totalAmount: 367.82,
           },
-        ]);
+        ]});
       }, 1000);
     });
   }
@@ -178,21 +186,20 @@ export default class Mock {
    * - cName: string
    * - aName: string
    * - licenseNo: int
-   * - pickupTime: // TODO: confirm format of this.
-   * - pickupDate: // TODO: confirm format of this.
+   * - pickupTime: 
+   * - pickupDate: Date
    * @returns {Promise<any>}
    */
   static getPickupTimes() {
     return new Promise(function (resolve, reject) {
       setTimeout(() => {
-        resolve([
+        resolve({code: 200, body: [
           {
             sName: "Broadway West",
             cName: "Jennifer Chow",
             aName: "Toby",
             licenseNo: 3467,
             pickupTime: null,
-            pickupDate: null
           },
           {
             sName: "Delta",
@@ -200,9 +207,8 @@ export default class Mock {
             aName: "Fluffy",
             licenseNo: 7682,
             pickupTime: null,
-            pickupDate: null
           }
-        ]);
+        ]});
       }, 1000);
     });
   }
@@ -219,7 +225,7 @@ export default class Mock {
   static getPreferredDonors() {
     return new Promise(function (resolve, reject) {
       setTimeout(() => {
-        resolve([
+        resolve({code: 200, body: [
           {
             cName: "Jennifer Chow",
             cEmail: "jennifer.chow@gmail.com",
@@ -230,7 +236,7 @@ export default class Mock {
             cEmail: "ovie@hotmail.com",
             cPhone: "7789876363"
           }
-        ]);
+        ]});
       }, 1000);
     });
   }

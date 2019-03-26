@@ -42,14 +42,13 @@ The format of these queries (especially the responses) are subject to change.
 // Request:
 	{
 		cPhone: string,
-		cName: string,       // optional
-		cEmail: string,      // optional
-		cHouseNo: int,       // optional
-		cStreet: string,     // optional
-		city: string,        // optional
-		province: string,    // optional
-		cPostalCode: string, // optional
-		petsOwned: int       // optional
+		cName: string,       
+		cEmail: string,      
+		cHouseNo: int,       
+		cStreet: string,     
+		city: string,        
+		province: string,
+		cPostalCode: string
 	}
 
 // Response:

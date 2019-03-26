@@ -20,7 +20,7 @@ const BURNABY_PHONE        = "6045552222";
 const DELTA_PHONE          = "6045553333";
 const SURREY_SOUTH_PHONE   = "6045554444";
 
-let HIDE_PETS_OWNED = false;
+export const ROOT_URL = "http://localhost:8080";
 
 // If you are editing the responses from the back-end
 // or handling queries to be sent, do that from the
@@ -53,26 +53,15 @@ class ClientInfoForm extends React.Component {
       this.setState({ validated: true });
 
       this.request = {
-        cPhone: ReactDOM.findDOMNode(this.refs.formClientPhone).value,
+        cPhone:      ReactDOM.findDOMNode(this.refs.formClientPhone).value,
+        cName:       ReactDOM.findDOMNode(this.refs.formClientName).value,
+        cHouseNo:    ReactDOM.findDOMNode(this.refs.formClientHouseNumber).value,
+        cStreet:     ReactDOM.findDOMNode(this.refs.formClientStreetName).value,
+        cPostalCode: ReactDOM.findDOMNode(this.refs.formClientPostalCode).value,
+        cEmail:      ReactDOM.findDOMNode(this.refs.formClientEmail).value,
+        city:        ReactDOM.findDOMNode(this.refs.formClientCity).value,
+        province:    ReactDOM.findDOMNode(this.refs.formClientProvince).value
       };
-
-      let cName       = ReactDOM.findDOMNode(this.refs.formClientName).value;
-      let cEmail      = ReactDOM.findDOMNode(this.refs.formClientEmail).value;
-      let cHouseNo    = ReactDOM.findDOMNode(this.refs.formClientHouseNumber).value;
-      let cStreet     = ReactDOM.findDOMNode(this.refs.formClientStreetName).value;
-      let city        = ReactDOM.findDOMNode(this.refs.formClientCity).value;
-      let province    = ReactDOM.findDOMNode(this.refs.formClientProvince).value;
-      let cPostalCode = ReactDOM.findDOMNode(this.refs.formClientPostalCode).value;
-      let petsOwned   = ReactDOM.findDOMNode(this.refs.formClientPetsOwned).value;
-
-      if (cName !== "")       {this.request.cName = cName;}
-      if (cEmail !== "")      {this.request.cEmail = cEmail;}
-      if (cHouseNo !== "")    {this.request.cHouseNo = Number(cHouseNo);}
-      if (cStreet !== "")     {this.request.cStreet = cStreet;}
-      if (city !== "")        {this.request.city = city;}
-      if (province !== "")    {this.request.province = province;}
-      if (cPostalCode !== "") {this.request.cPostalCode = cPostalCode;}
-      if (petsOwned !== "")   {this.request.petsOwned = Number(petsOwned);}
 
       console.log("Request for ClientInfoForm");
       console.log(this.request);
@@ -96,35 +85,35 @@ class ClientInfoForm extends React.Component {
             </Form.Group>
             <Form.Group as={Col}>
               <Form.Label>Name</Form.Label>
-              <Form.Control ref="formClientName" type="name" placeholder="John Smith"/>
+              <Form.Control ref="formClientName" type="name" placeholder="John Smith" required/>
             </Form.Group>
             <Form.Group as={Col}>
               <Form.Label>Email address</Form.Label>
-              <Form.Control ref="formClientEmail" type="email" placeholder="me@example.com"/>
+              <Form.Control ref="formClientEmail" type="email" placeholder="me@example.com" required/>
             </Form.Group>
           </Form.Row>
 
           <Form.Row>
             <Form.Group as={Col}>
               <Form.Label>House number</Form.Label>
-              <Form.Control ref="formClientHouseNumber" type="number" placeholder="Enter house number" />
+              <Form.Control ref="formClientHouseNumber" type="number" placeholder="Enter house number" required/>
             </Form.Group>
 
             <Form.Group as={Col}>
               <Form.Label>Street</Form.Label>
-              <Form.Control ref="formClientStreetName" type="street" placeholder="Enter street name" />
+              <Form.Control ref="formClientStreetName" type="street" placeholder="Enter street name" required/>
             </Form.Group>
           </Form.Row>
 
           <Form.Row>
             <Form.Group as={Col}>
               <Form.Label>City</Form.Label>
-              <Form.Control ref="formClientCity" type="name" placeholder="Vancouver" />
+              <Form.Control ref="formClientCity" type="name" placeholder="Vancouver" required/>
             </Form.Group>
 
             <Form.Group as={Col}>
               <Form.Label>Province</Form.Label>
-              <Form.Control ref="formClientProvince" as="select">
+              <Form.Control ref="formClientProvince" as="select" required>
                 <option value={null}>{}</option>
                 <option value={"BC"}>BC</option>
                 <option value={"AB"}>AB</option>
@@ -144,14 +133,9 @@ class ClientInfoForm extends React.Component {
 
             <Form.Group as={Col}>
               <Form.Label>Postal Code</Form.Label>
-              <Form.Control ref="formClientPostalCode" type="postal-code" placeholder="A1A 1A1" />
+              <Form.Control ref="formClientPostalCode" type="postal-code" placeholder="A1A 1A1" required/>
             </Form.Group>
           </Form.Row>
-
-          <Form.Group id={"pets-owned"} className={(HIDE_PETS_OWNED) ? "hidden" : ""}>
-            <Form.Label>Pets Owned (owners only)</Form.Label>
-            <Form.Control ref="formClientPetsOwned" type="number" placeholder="0" disabled={HIDE_PETS_OWNED}/>
-          </Form.Group>
 
           <Button type="submit">Add/Update Info</Button>
         </Form>
@@ -783,7 +767,6 @@ class App extends Component {
                 variant="info"
                 onClick={() => {
                   this.setState({ donorModalShow: true });
-                  HIDE_PETS_OWNED = true;
                 }}>
               Donor
             </Button>
@@ -796,7 +779,6 @@ class App extends Component {
                 variant="info"
                 onClick={() => {
                   this.setState({ ownerModalShow: true });
-                  HIDE_PETS_OWNED = false;
                 }}>
               Pet owner
             </Button>

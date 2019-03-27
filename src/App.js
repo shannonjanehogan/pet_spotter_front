@@ -28,6 +28,66 @@ export const ROOT_URL = "http://localhost:8080";
 // VOLUNTEER".  Entry-points for functionality are
 // indicated with TODO statements.
 
+export let HttpClient = function() {
+  this.get = function(aUrl, aCallback) {
+    let anHttpRequest = new XMLHttpRequest();
+    anHttpRequest.onreadystatechange = function() {
+      if (anHttpRequest.readyState === 4 && anHttpRequest.status === 200){
+        aCallback(anHttpRequest.responseText);
+      }
+    };
+
+    console.log("Sending a get request to " + aUrl);
+
+    anHttpRequest.open( "GET", aUrl, true );
+    anHttpRequest.send( null);
+  };
+
+  this.put = function(aUrl, requestBody, aCallback) {
+    let anHttpRequest = new XMLHttpRequest();
+    anHttpRequest.onreadystatechange = function() {
+      if (anHttpRequest.readyState === 4 && anHttpRequest.status === 200){
+        aCallback(anHttpRequest.responseText);
+      }
+    };
+
+    console.log("Sending data...");
+    console.log(requestBody);
+
+    anHttpRequest.open( "PUT", aUrl, true );
+    anHttpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    anHttpRequest.send( JSON.stringify(requestBody));
+  };
+
+  this.post = function(aUrl, requestBody, aCallback) {
+    let anHttpRequest = new XMLHttpRequest();
+    anHttpRequest.onreadystatechange = function() {
+      if (anHttpRequest.readyState === 4 && anHttpRequest.status === 200){
+        aCallback(anHttpRequest.responseText);
+      }
+    };
+
+    console.log("Sending data...");
+    console.log(requestBody);
+
+    anHttpRequest.open( "POST", aUrl, true );
+    anHttpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    anHttpRequest.send( JSON.stringify(requestBody));
+  };
+
+  this.delete = function(aUrl, aCallback) {
+    let anHttpRequest = new XMLHttpRequest();
+    anHttpRequest.onreadystatechange = function() {
+      if (anHttpRequest.readyState === 4 && anHttpRequest.status === 200){
+        aCallback(anHttpRequest.responseText);
+      }
+    };
+
+    anHttpRequest.open( "DELETE", aUrl, true );
+    anHttpRequest.send( null);
+  };
+};
+
 ///////////////////////
 /*      CLIENTS      */
 ///////////////////////
@@ -42,7 +102,7 @@ class ClientInfoForm extends React.Component {
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(event) {
+  async handleSubmit(event) {
     const form = event.currentTarget;
 
     event.preventDefault();
@@ -52,13 +112,13 @@ class ClientInfoForm extends React.Component {
     } else {
       this.setState({ validated: true });
 
+      let cPhone = ReactDOM.findDOMNode(this.refs.formClientPhone).value;
       this.request = {
-        cPhone:      ReactDOM.findDOMNode(this.refs.formClientPhone).value,
-        cName:       ReactDOM.findDOMNode(this.refs.formClientName).value,
-        cHouseNo:    ReactDOM.findDOMNode(this.refs.formClientHouseNumber).value,
-        cStreet:     ReactDOM.findDOMNode(this.refs.formClientStreetName).value,
-        cPostalCode: ReactDOM.findDOMNode(this.refs.formClientPostalCode).value,
-        cEmail:      ReactDOM.findDOMNode(this.refs.formClientEmail).value,
+        name:       ReactDOM.findDOMNode(this.refs.formClientName).value,
+        houseNo:    ReactDOM.findDOMNode(this.refs.formClientHouseNumber).value,
+        street:     ReactDOM.findDOMNode(this.refs.formClientStreetName).value,
+        postalCode: ReactDOM.findDOMNode(this.refs.formClientPostalCode).value,
+        email:      ReactDOM.findDOMNode(this.refs.formClientEmail).value,
         city:        ReactDOM.findDOMNode(this.refs.formClientCity).value,
         province:    ReactDOM.findDOMNode(this.refs.formClientProvince).value
       };
@@ -66,7 +126,13 @@ class ClientInfoForm extends React.Component {
       console.log("Request for ClientInfoForm");
       console.log(this.request);
 
-      // TODO: Send request to back-end
+      let httpClient = new HttpClient();
+      // let _this = this;
+
+      await httpClient.put(`${ROOT_URL}/client/${cPhone}`, this.request, function (response) {
+        console.log("Returning result.  Response below:");
+        console.log(response);
+      });
     }
   }
 
@@ -155,7 +221,7 @@ class DonationForm extends React.Component {
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(event) {
+  async handleSubmit(event) {
     const form = event.currentTarget;
 
     event.preventDefault();
@@ -168,25 +234,27 @@ class DonationForm extends React.Component {
       let amount = Number(ReactDOM.findDOMNode(this.refs.formDonationAmount).value);
       let nameToCredit = ReactDOM.findDOMNode(this.refs.formDonationNameToCredit).value;
       let description = ReactDOM.findDOMNode(this.refs.formDonationDescription).value;
+      let date = new Date();
 
       this.request = {
         cPhone: ReactDOM.findDOMNode(this.refs.formDonationPhone).value,
         amount: amount,
         sPhone: ReactDOM.findDOMNode(this.refs.formDonationShelter).value,
-        nameToCredit: (nameToCredit === "") ? "Anonymous" : nameToCredit,
-        description: (description === "") ? null : description
+        name: (nameToCredit === "") ? "Anonymous" : nameToCredit,
+        message: (description === "") ? null : description,
+        date: date.toISOString()
       };
 
       console.log("Request for DonationForm");
       console.log(this.request);
 
-      /** TODO: This request is missing the fields:
-       * - Date
-       * - TransactionID
-       * Handle these two fields in the back-end.
-       */
+      let httpClient = new HttpClient();
+      // let _this = this;
 
-      // TODO: Send request to back-end
+      await httpClient.post(`${ROOT_URL}/donations`, this.request, function (response) {
+        console.log("Returning result.  Response below:");
+        console.log(response);
+      });
     }
   }
 
@@ -238,8 +306,9 @@ class TaxReceiptForm extends React.Component {
     super(...args);
     this.state = {
       data: {
-        cName: null,
-        total: 0,
+        cname: null,
+        sum: 0,
+        count: 0,
       },
     };
 
@@ -252,16 +321,18 @@ class TaxReceiptForm extends React.Component {
    */
   async handleSubmit(e) {
     e.preventDefault();
-    this.request = {
-      cPhone: ReactDOM.findDOMNode(this.refs.formTaxReceiptPhone).value
-    };
+    let cPhone = ReactDOM.findDOMNode(this.refs.formTaxReceiptPhone).value;
 
-    console.log("Request for TaxReceiptForm");
-    console.log(this.request);
+    console.log("Request for TaxReceiptForm.  ID: " + cPhone);
 
-    // TODO: Replace mock request with real back-end request
-    let response = await Mock.getTaxReceipt(this.request);
-    this.renderResponse(response);
+    let httpClient = new HttpClient();
+    let _this = this;
+
+    await httpClient.get(`${ROOT_URL}/donors/${cPhone}/taxreceipt`, function (response) {
+      console.log("Returning result.  Response below:");
+      console.log(response);
+      _this.renderResponse(JSON.parse(response)[0]);
+    });
   }
 
   /**
@@ -270,8 +341,10 @@ class TaxReceiptForm extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.taxReceiptText).style="display: block";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.taxReceiptText).style = "display: block";
+    }
   }
 
   render() {
@@ -283,7 +356,7 @@ class TaxReceiptForm extends React.Component {
               <Form.Label>Phone number</Form.Label>
               <Form.Control ref="formTaxReceiptPhone" type="phone-number" placeholder="7785555555" required/>
             </Form.Group>
-            <Button type="submit">Get my tax receipt for 2019</Button>
+            <Button type="submit">Get my tax receipt for 2018</Button>
           </Form>
 
           <div className={"tax-receipt-text"} ref={"taxReceiptText"}>
@@ -291,7 +364,7 @@ class TaxReceiptForm extends React.Component {
             <h3>Official donation receipt for tax purposes</h3>
             <h6>Date issued: {d.toDateString()}</h6>
             <br/>
-            <p>{this.state.data.cName} has donated ${this.state.data.total.toFixed(2)} to animal shelters in 2019.</p>
+            <p>{this.state.data.cname} has made {this.state.data.count} donations totaling ${this.state.data.sum.toFixed(2)} to animal shelters in 2018.</p>
           </div>
         </div>
     );
@@ -318,11 +391,14 @@ class ViewAllPets extends React.Component {
 
     console.log("Request for ViewAllPets");
 
-    // TODO: Replace mock request with real back-end request
-    // Expect that the back-end request returns a Promise with
-    //   an array of objects with necessary info
-    let response = await Mock.getAllPets();
-    this.renderResponse(response);
+    let httpClient = new HttpClient();
+    let _this = this;
+
+    await httpClient.get(`${ROOT_URL}/animals`, function (response) {
+      console.log("Returning result.  Response below:");
+      console.log(response);
+      _this.renderResponse(JSON.parse(response));
+    });
   }
 
   /**
@@ -331,8 +407,10 @@ class ViewAllPets extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.tablePetsAll).style="display: table";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.tablePetsAll).style = "display: table";
+    }
   }
 
   render() {
@@ -360,16 +438,16 @@ class ViewAllPets extends React.Component {
             <tbody>{this.state.data.map(function(item, key) {
               return (
                   <tr key = {key}>
-                    <td>{item.sName}</td>
-                    <td>{item.aName}</td>
+                    <td>{item.sname.trim()}</td>
+                    <td>{item.aname.trim()}</td>
                     <td>{item.age}</td>
                     <td>{item.weight}</td>
                     <td>{item.gender}</td>
-                    <td>{item.species}</td>
-                    <td>{item.breed}</td>
-                    <td>{(item.goodWithKids) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
-                    <td>{(item.goodWithCats) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
-                    <td>{(item.goodWithDogs) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{item.species.trim()}</td>
+                    <td>{item.bname.trim()}</td>
+                    <td>{(item.goodwithkids) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodwithcats) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodwithdogs) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
                   </tr>
               )
             })}</tbody>
@@ -392,18 +470,18 @@ class ViewPetsByShelter extends React.Component {
    */
   async handleSubmit(e) {
     e.preventDefault();
-    this.request = {
-      sPhone: ReactDOM.findDOMNode(this.refs.formPetsByShelter).value
-    };
+    let sPhone = ReactDOM.findDOMNode(this.refs.formPetsByShelter).value;
 
-    console.log("Request for ViewPetsByShelter");
-    console.log(this.request);
+    console.log("Request for ViewPetsByShelter.  ID: " + sPhone);
 
-    // TODO: Replace mock request with real back-end request
-    // Expect that the back-end request returns a Promise with
-    //   an array of objects with necessary info
-    let response = await Mock.getPetsByShelter(this.request);
-    this.renderResponse(response);
+    let httpClient = new HttpClient();
+    let _this = this;
+
+    await httpClient.get(`${ROOT_URL}/shelters/${sPhone}/animals`, function (response) {
+      console.log("Returning result.  Response below:");
+      console.log(response);
+      _this.renderResponse(JSON.parse(response));
+    });
   }
 
   /**
@@ -412,8 +490,10 @@ class ViewPetsByShelter extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.tablePetsByShelter).style="display: table";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.tablePetsByShelter).style = "display: table";
+    }
   }
 
   render() {
@@ -450,15 +530,15 @@ class ViewPetsByShelter extends React.Component {
             <tbody>{this.state.data.map(function(item, key) {
               return (
                   <tr key = {key}>
-                    <td>{item.aName}</td>
+                    <td>{item.aname.trim()}</td>
                     <td>{item.age}</td>
                     <td>{item.weight}</td>
                     <td>{item.gender}</td>
-                    <td>{item.species}</td>
-                    <td>{item.breed}</td>
-                    <td>{(item.goodWithKids) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
-                    <td>{(item.goodWithCats) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
-                    <td>{(item.goodWithDogs) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{item.species.trim()}</td>
+                    <td>{item.bname.trim()}</td>
+                    <td>{(item.goodwithkids) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodwithcats) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodwithdogs) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
                   </tr>
               )
             })}</tbody>
@@ -484,7 +564,7 @@ class DeleteDonation extends React.Component {
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(event) {
+  async handleSubmit(event) {
     const form = event.currentTarget;
 
     event.preventDefault();
@@ -494,14 +574,17 @@ class DeleteDonation extends React.Component {
     } else {
       this.setState({ validated: true });
 
-      this.request = {
-        transactionID: ReactDOM.findDOMNode(this.refs.formDeleteDonationID).value,
-      };
+      let transactionID = ReactDOM.findDOMNode(this.refs.formDeleteDonationID).value;
 
-      console.log("Request for DeleteDonation");
-      console.log(this.request);
+      console.log("Request for DeleteDonation.  ID: " + transactionID);
 
-      // TODO: Make back-end request
+      let httpClient = new HttpClient();
+      // let _this = this;
+
+      await httpClient.delete(`${ROOT_URL}/donations/${transactionID}`, function (response) {
+        console.log("Returning result.  Response below:");
+        console.log(response);
+      });
     }
   }
 
@@ -515,7 +598,7 @@ class DeleteDonation extends React.Component {
         >
           <Form.Group>
             <Form.Label>Transaction ID</Form.Label>
-            <Form.Control ref="formDeleteDonationID" type="text" placeholder="Enter transaction ID" required/>
+            <Form.Control ref="formDeleteDonationID" type="number" placeholder="Enter transaction ID" required/>
           </Form.Group>
           <Button type="submit">Delete Donation</Button>
         </Form>
@@ -539,9 +622,14 @@ class ViewPickupTimes extends React.Component {
 
     console.log("Request for ViewPickupTimes");
 
-    // TODO: Replace mock request with real back-end request
-    let response = await Mock.getPickupTimes();
-    this.renderResponse(response);
+    let httpClient = new HttpClient();
+    let _this = this;
+
+    await httpClient.get(`${ROOT_URL}/animalpickups`, function (response) {
+      console.log("Returning result.  Response below:");
+      console.log(response);
+      _this.renderResponse(JSON.parse(response));
+    });
   }
 
   /**
@@ -550,8 +638,10 @@ class ViewPickupTimes extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.tablePickupTimes).style="display: table";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.tablePickupTimes).style = "display: table";
+    }
   }
 
   render() {
@@ -567,18 +657,18 @@ class ViewPickupTimes extends React.Component {
               <th>Shelter</th>
               <th>Client</th>
               <th>Animal name</th>
-              <th>Animal license number</th>
               <th>Pickup time</th>
+              <th>Pickup date</th>
             </tr>
             </thead>
             <tbody>{this.state.data.map(function(item, key) {
               return (
                   <tr key = {key}>
-                    <td>{item.sName}</td>
-                    <td>{item.cName}</td>
-                    <td>{item.aName}</td>
-                    <td>{item.licenseNo}</td>
-                    <td>{item.pickupTime}</td>
+                    <td>{item.sname.trim()}</td>
+                    <td>{item.cname.trim()}</td>
+                    <td>{item.aname.trim()}</td>
+                    <td>{item.pickuptime.substring(11,16)}</td>
+                    <td>{item.pickuptime.substring(0,10)}</td>
                   </tr>
               )
             })}</tbody>
@@ -604,9 +694,14 @@ class TotalDonationsByShelter extends React.Component {
 
     console.log("Request for TotalDonationsByShelter");
 
-    // TODO: Replace mock request with real back-end request
-    let response = await Mock.getDonationsByShelter();
-    this.renderResponse(response);
+    let httpClient = new HttpClient();
+    let _this = this;
+
+    await httpClient.get(`${ROOT_URL}/donations`, function (response) {
+      console.log("Returning result.  Response below:");
+      console.log(response);
+      _this.renderResponse(JSON.parse(response));
+    });
   }
 
   /**
@@ -619,8 +714,10 @@ class TotalDonationsByShelter extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.tableDonationsByShelter).style="display: table";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.tableDonationsByShelter).style = "display: table";
+    }
   }
 
   render() {
@@ -640,8 +737,8 @@ class TotalDonationsByShelter extends React.Component {
             <tbody>{this.state.data.map(function(item, key) {
               return (
                   <tr key = {key}>
-                    <td>{item.sName}</td>
-                    <td>{item.totalAmount.toFixed(2)}</td>
+                    <td>{item.sname.trim()}</td>
+                    <td>{item.sum.toFixed(2)}</td>
                   </tr>
               )
             })}</tbody>
@@ -667,9 +764,14 @@ class PreferredDonors extends React.Component {
 
     console.log("Request for PreferredDonors");
 
-    // TODO: Replace mock request with real back-end request
-    let response = await Mock.getPreferredDonors();
-    this.renderResponse(response);
+    let httpClient = new HttpClient();
+    let _this = this;
+
+    await httpClient.get(`${ROOT_URL}/donors`, function (response) {
+      console.log("Returning result.  Response below:");
+      console.log(response);
+      _this.renderResponse(JSON.parse(response));
+    });
   }
 
   /**
@@ -684,8 +786,10 @@ class PreferredDonors extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.tablePreferredDonors).style="display: table";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.tablePreferredDonors).style = "display: table";
+    }
   }
 
   render() {
@@ -706,9 +810,9 @@ class PreferredDonors extends React.Component {
             <tbody>{this.state.data.map(function(item, key) {
               return (
                   <tr key = {key}>
-                    <td>{item.cName}</td>
-                    <td>{item.cEmail}</td>
-                    <td>{item.cPhone}</td>
+                    <td>{item.cname.trim()}</td>
+                    <td>{item.cemail.trim()}</td>
+                    <td>{item.cphone.trim()}</td>
                   </tr>
               )
             })}</tbody>

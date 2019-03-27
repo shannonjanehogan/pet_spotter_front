@@ -4,6 +4,7 @@ import dog from './images/dog.svg';
 import logo from './images/top-img.PNG';
 import './App.css';
 import Mock from './Mock';
+import PetsApi from './PetApi';
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Modal from 'react-bootstrap/Modal';
@@ -321,6 +322,8 @@ class ViewAllPets extends React.Component {
     // TODO: Replace mock request with real back-end request
     // Expect that the back-end request returns a Promise with
     //   an array of objects with necessary info
+    // TODO: incorporate PetsApi response
+    // let response = await PetsApi.getAllPets();
     let response = await Mock.getAllPets();
     this.renderResponse(response);
   }
@@ -402,6 +405,8 @@ class ViewPetsByShelter extends React.Component {
     // TODO: Replace mock request with real back-end request
     // Expect that the back-end request returns a Promise with
     //   an array of objects with necessary info
+    // TODO: incorporate API response
+    // let response = await PetsApi.getPetsByShelter(shelter_id);
     let response = await Mock.getPetsByShelter(this.request);
     this.renderResponse(response);
   }

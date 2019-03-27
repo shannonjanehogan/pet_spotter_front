@@ -1,19 +1,20 @@
 const axios = require('axios');
+const ROOT_URL = "http://localhost:8080";
 
 class PetsApi {
 
-  async getPetsByShelter(shelter_id) {
+  static async getPetsByShelter(shelter_id) {
     try {
-      const response = await axios.get(`http://127.0.0.1:8080/shelters/?id=${shelter_id}/animals`);
+      const response = await axios.get(`${ROOT_URL}/shelters/${shelter_id}/animals`);
       return response.data;
     } catch (error) {
       console.error(error);
     }
   }
 
-  async getAllPets() {
+  static async getAllPets() {
     try {
-      const response = await axios.get('http://127.0.0.1:8080/animals');
+      const response = await axios.get(`${ROOT_URL}/animals`);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -22,7 +23,7 @@ class PetsApi {
 
   async createDonation(data) {
     try {
-      const response = await axios.post('http://127.0.0.1:8080/donations', {
+      const response = await axios.post(`${ROOT_URL}/donations`, {
         data
       });
       return response.data;
@@ -33,7 +34,7 @@ class PetsApi {
 
   async deleteDonation(donation_id) {
     try {
-      const response = await axios.delete(`http://127.0.0.1:8080/donations/?id=${donation_id}`);
+      const response = await axios.delete(`${ROOT_URL}/donations/${donation_id}`);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -42,7 +43,7 @@ class PetsApi {
 
   async updateClient(data) {
     try {
-      const response = await axios.put(`http://127.0.0.1:8080/client/?id=${data.id}`, {
+      const response = await axios.put(`${ROOT_URL}/client/${data.id}`, {
         data
       });
       return response.data;
@@ -51,36 +52,36 @@ class PetsApi {
     }
   }
 
-  async getAnimalPickups() {
+  static async getAnimalPickups() {
     try {
-      const response = await axios.get('http://127.0.0.1:8080/animalpickups');
+      const response = await axios.get(`${ROOT_URL}/animalpickups`);
       return response.data;
     } catch (error) {
       console.error(error);
     }
   }
 
-  async getTaxReceipt(donor_id) {
+  static async getTaxReceipt(donor_id) {
     try {
-      const response = await axios.get(`http://127.0.0.1:8080/donors/?id=${donor_id}/taxreceipt`);
+      const response = await axios.get(`${ROOT_URL}/donors/${donor_id}/taxreceipt`);
       return response.data;
     } catch (error) {
       console.error(error);
     }
   }
 
-  async getDonations() {
+  static async getDonations() {
     try {
-      const response = await axios.get('http://127.0.0.1:8080/donations');
+      const response = await axios.get(`${ROOT_URL}/donations`);
       return response.data;
     } catch (error) {
       console.error(error);
     }
   }
 
-  async getDonors() {
+  static async getDonors() {
     try {
-      const response = await axios.get('http://127.0.0.1:8080/donors');
+      const response = await axios.get(`${ROOT_URL}/donors`);
       return response.data;
     } catch (error) {
       console.error(error);

@@ -21,8 +21,6 @@ const BURNABY_PHONE        = "6045552222";
 const DELTA_PHONE          = "6045553333";
 const SURREY_SOUTH_PHONE   = "6045554444";
 
-export const ROOT_URL = "http://localhost:8080";
-
 // If you are editing the responses from the back-end
 // or handling queries to be sent, do that from the
 // nine classes below under "CLIENTS" or "SHELTER
@@ -239,8 +237,9 @@ class TaxReceiptForm extends React.Component {
     super(...args);
     this.state = {
       data: {
-        cName: null,
-        total: 0,
+        cname: null,
+        sum: 0,
+        count: 0,
       },
     };
 
@@ -253,16 +252,15 @@ class TaxReceiptForm extends React.Component {
    */
   async handleSubmit(e) {
     e.preventDefault();
-    this.request = {
-      cPhone: ReactDOM.findDOMNode(this.refs.formTaxReceiptPhone).value
-    };
+    let cPhone = ReactDOM.findDOMNode(this.refs.formTaxReceiptPhone).value;
 
-    console.log("Request for TaxReceiptForm");
-    console.log(this.request);
+    console.log("Request for TaxReceiptForm.  ID: " + cPhone);
 
-    // TODO: Replace mock request with real back-end request
-    let response = await Mock.getTaxReceipt(this.request);
-    this.renderResponse(response);
+    await PetsApi.getTaxReceipt(cPhone).then(
+        res => {
+          this.renderResponse(res[0]);
+        }
+    );
   }
 
   /**
@@ -271,8 +269,10 @@ class TaxReceiptForm extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.taxReceiptText).style="display: block";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.taxReceiptText).style = "display: block";
+    }
   }
 
   render() {
@@ -284,7 +284,7 @@ class TaxReceiptForm extends React.Component {
               <Form.Label>Phone number</Form.Label>
               <Form.Control ref="formTaxReceiptPhone" type="phone-number" placeholder="7785555555" required/>
             </Form.Group>
-            <Button type="submit">Get my tax receipt for 2019</Button>
+            <Button type="submit">Get my tax receipt for 2018</Button>
           </Form>
 
           <div className={"tax-receipt-text"} ref={"taxReceiptText"}>
@@ -292,7 +292,7 @@ class TaxReceiptForm extends React.Component {
             <h3>Official donation receipt for tax purposes</h3>
             <h6>Date issued: {d.toDateString()}</h6>
             <br/>
-            <p>{this.state.data.cName} has donated ${this.state.data.total.toFixed(2)} to animal shelters in 2019.</p>
+            <p>{this.state.data.cname} has made {this.state.data.count} donations totaling ${this.state.data.sum.toFixed(2)} to animal shelters in 2018.</p>
           </div>
         </div>
     );
@@ -319,13 +319,11 @@ class ViewAllPets extends React.Component {
 
     console.log("Request for ViewAllPets");
 
-    // TODO: Replace mock request with real back-end request
-    // Expect that the back-end request returns a Promise with
-    //   an array of objects with necessary info
-    // TODO: incorporate PetsApi response
-    // let response = await PetsApi.getAllPets();
-    let response = await Mock.getAllPets();
-    this.renderResponse(response);
+    await PetsApi.getAllPets().then(
+        res => {
+          this.renderResponse(res);
+        }
+    );
   }
 
   /**
@@ -334,8 +332,10 @@ class ViewAllPets extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.tablePetsAll).style="display: table";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.tablePetsAll).style = "display: table";
+    }
   }
 
   render() {
@@ -363,16 +363,16 @@ class ViewAllPets extends React.Component {
             <tbody>{this.state.data.map(function(item, key) {
               return (
                   <tr key = {key}>
-                    <td>{item.sName}</td>
-                    <td>{item.aName}</td>
+                    <td>{item.sname.trim()}</td>
+                    <td>{item.aname.trim()}</td>
                     <td>{item.age}</td>
                     <td>{item.weight}</td>
                     <td>{item.gender}</td>
-                    <td>{item.species}</td>
-                    <td>{item.breed}</td>
-                    <td>{(item.goodWithKids) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
-                    <td>{(item.goodWithCats) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
-                    <td>{(item.goodWithDogs) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{item.species.trim()}</td>
+                    <td>{item.bname.trim()}</td>
+                    <td>{(item.goodwithkids) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodwithcats) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodwithdogs) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
                   </tr>
               )
             })}</tbody>
@@ -395,20 +395,16 @@ class ViewPetsByShelter extends React.Component {
    */
   async handleSubmit(e) {
     e.preventDefault();
-    this.request = {
-      sPhone: ReactDOM.findDOMNode(this.refs.formPetsByShelter).value
-    };
+    let sPhone = ReactDOM.findDOMNode(this.refs.formPetsByShelter).value;
 
-    console.log("Request for ViewPetsByShelter");
-    console.log(this.request);
+    console.log("Request for ViewPetsByShelter.  ID: " + sPhone);
 
-    // TODO: Replace mock request with real back-end request
-    // Expect that the back-end request returns a Promise with
-    //   an array of objects with necessary info
-    // TODO: incorporate API response
-    // let response = await PetsApi.getPetsByShelter(shelter_id);
-    let response = await Mock.getPetsByShelter(this.request);
-    this.renderResponse(response);
+    await PetsApi.getPetsByShelter(sPhone).then(
+        res => {
+          this.renderResponse(res);
+        }
+    );
+
   }
 
   /**
@@ -417,8 +413,10 @@ class ViewPetsByShelter extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.tablePetsByShelter).style="display: table";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.tablePetsByShelter).style = "display: table";
+    }
   }
 
   render() {
@@ -440,30 +438,30 @@ class ViewPetsByShelter extends React.Component {
 
           <Table ref={"tablePetsByShelter"} striped hover>
             <thead>
-              <tr>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Weight</th>
-                <th>Gender</th>
-                <th>Species</th>
-                <th>Breed</th>
-                <th>Good with kids?</th>
-                <th>Good with cats?</th>
-                <th>Good with dogs?</th>
-              </tr>
+            <tr>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Weight</th>
+              <th>Gender</th>
+              <th>Species</th>
+              <th>Breed</th>
+              <th>Good with kids?</th>
+              <th>Good with cats?</th>
+              <th>Good with dogs?</th>
+            </tr>
             </thead>
             <tbody>{this.state.data.map(function(item, key) {
               return (
                   <tr key = {key}>
-                    <td>{item.aName}</td>
+                    <td>{item.aname.trim()}</td>
                     <td>{item.age}</td>
                     <td>{item.weight}</td>
                     <td>{item.gender}</td>
-                    <td>{item.species}</td>
-                    <td>{item.breed}</td>
-                    <td>{(item.goodWithKids) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
-                    <td>{(item.goodWithCats) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
-                    <td>{(item.goodWithDogs) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{item.species.trim()}</td>
+                    <td>{item.bname.trim()}</td>
+                    <td>{(item.goodwithkids) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodwithcats) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
+                    <td>{(item.goodwithdogs) ? <span className={"green-text"}>{"Yes"}</span> : <span className={"red-text"}>{"No"}</span>}</td>
                   </tr>
               )
             })}</tbody>
@@ -544,9 +542,11 @@ class ViewPickupTimes extends React.Component {
 
     console.log("Request for ViewPickupTimes");
 
-    // TODO: Replace mock request with real back-end request
-    let response = await Mock.getPickupTimes();
-    this.renderResponse(response);
+    await PetsApi.getAnimalPickups().then(
+        res => {
+          this.renderResponse(res);
+        }
+    );
   }
 
   /**
@@ -555,8 +555,10 @@ class ViewPickupTimes extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.tablePickupTimes).style="display: table";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.tablePickupTimes).style = "display: table";
+    }
   }
 
   render() {
@@ -572,18 +574,18 @@ class ViewPickupTimes extends React.Component {
               <th>Shelter</th>
               <th>Client</th>
               <th>Animal name</th>
-              <th>Animal license number</th>
               <th>Pickup time</th>
+              <th>Pickup date</th>
             </tr>
             </thead>
             <tbody>{this.state.data.map(function(item, key) {
               return (
                   <tr key = {key}>
-                    <td>{item.sName}</td>
-                    <td>{item.cName}</td>
-                    <td>{item.aName}</td>
-                    <td>{item.licenseNo}</td>
-                    <td>{item.pickupTime}</td>
+                    <td>{item.sname.trim()}</td>
+                    <td>{item.cname.trim()}</td>
+                    <td>{item.aname.trim()}</td>
+                    <td>{item.pickuptime.substring(11,16)}</td>
+                    <td>{item.pickuptime.substring(0,10)}</td>
                   </tr>
               )
             })}</tbody>
@@ -609,9 +611,11 @@ class TotalDonationsByShelter extends React.Component {
 
     console.log("Request for TotalDonationsByShelter");
 
-    // TODO: Replace mock request with real back-end request
-    let response = await Mock.getDonationsByShelter();
-    this.renderResponse(response);
+    await PetsApi.getDonations().then(
+        res => {
+          this.renderResponse(res);
+        }
+    );
   }
 
   /**
@@ -624,8 +628,10 @@ class TotalDonationsByShelter extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.tableDonationsByShelter).style="display: table";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.tableDonationsByShelter).style = "display: table";
+    }
   }
 
   render() {
@@ -645,8 +651,8 @@ class TotalDonationsByShelter extends React.Component {
             <tbody>{this.state.data.map(function(item, key) {
               return (
                   <tr key = {key}>
-                    <td>{item.sName}</td>
-                    <td>{item.totalAmount.toFixed(2)}</td>
+                    <td>{item.sname.trim()}</td>
+                    <td>{item.sum.toFixed(2)}</td>
                   </tr>
               )
             })}</tbody>
@@ -672,9 +678,12 @@ class PreferredDonors extends React.Component {
 
     console.log("Request for PreferredDonors");
 
-    // TODO: Replace mock request with real back-end request
-    let response = await Mock.getPreferredDonors();
-    this.renderResponse(response);
+    await PetsApi.getDonors().then(
+      res => {
+        this.renderResponse(res);
+      }
+    );
+
   }
 
   /**
@@ -689,8 +698,10 @@ class PreferredDonors extends React.Component {
    */
   renderResponse(response) {
     console.log(response);
-    this.setState({data: response.body});
-    ReactDOM.findDOMNode(this.refs.tablePreferredDonors).style="display: table";
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.tablePreferredDonors).style = "display: table";
+    }
   }
 
   render() {
@@ -711,9 +722,9 @@ class PreferredDonors extends React.Component {
             <tbody>{this.state.data.map(function(item, key) {
               return (
                   <tr key = {key}>
-                    <td>{item.cName}</td>
-                    <td>{item.cEmail}</td>
-                    <td>{item.cPhone}</td>
+                    <td>{item.cname.trim()}</td>
+                    <td>{item.cemail.trim()}</td>
+                    <td>{item.cphone.trim()}</td>
                   </tr>
               )
             })}</tbody>

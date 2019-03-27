@@ -3,7 +3,6 @@ import cat from './images/cat.svg';
 import dog from './images/dog.svg';
 import logo from './images/top-img.PNG';
 import './App.css';
-import Mock from './Mock';
 import PetsApi from './PetApi';
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
@@ -41,7 +40,7 @@ class ClientInfoForm extends React.Component {
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(event) {
+  async handleSubmit(event) {
     const form = event.currentTarget;
 
     event.preventDefault();
@@ -51,13 +50,13 @@ class ClientInfoForm extends React.Component {
     } else {
       this.setState({ validated: true });
 
+      let cPhone = ReactDOM.findDOMNode(this.refs.formClientPhone).value;
       this.request = {
-        cPhone:      ReactDOM.findDOMNode(this.refs.formClientPhone).value,
-        cName:       ReactDOM.findDOMNode(this.refs.formClientName).value,
-        cHouseNo:    ReactDOM.findDOMNode(this.refs.formClientHouseNumber).value,
-        cStreet:     ReactDOM.findDOMNode(this.refs.formClientStreetName).value,
-        cPostalCode: ReactDOM.findDOMNode(this.refs.formClientPostalCode).value,
-        cEmail:      ReactDOM.findDOMNode(this.refs.formClientEmail).value,
+        name:       ReactDOM.findDOMNode(this.refs.formClientName).value,
+        houseNo:    ReactDOM.findDOMNode(this.refs.formClientHouseNumber).value,
+        street:     ReactDOM.findDOMNode(this.refs.formClientStreetName).value,
+        postalCode: ReactDOM.findDOMNode(this.refs.formClientPostalCode).value,
+        email:      ReactDOM.findDOMNode(this.refs.formClientEmail).value,
         city:        ReactDOM.findDOMNode(this.refs.formClientCity).value,
         province:    ReactDOM.findDOMNode(this.refs.formClientProvince).value
       };
@@ -65,7 +64,11 @@ class ClientInfoForm extends React.Component {
       console.log("Request for ClientInfoForm");
       console.log(this.request);
 
-      // TODO: Send request to back-end
+      await PetsApi.updateClient(cPhone, this.request).then(
+          res => {
+            console.log(res);
+          }
+      )
     }
   }
 
@@ -154,7 +157,7 @@ class DonationForm extends React.Component {
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(event) {
+  async handleSubmit(event) {
     const form = event.currentTarget;
 
     event.preventDefault();
@@ -167,25 +170,25 @@ class DonationForm extends React.Component {
       let amount = Number(ReactDOM.findDOMNode(this.refs.formDonationAmount).value);
       let nameToCredit = ReactDOM.findDOMNode(this.refs.formDonationNameToCredit).value;
       let description = ReactDOM.findDOMNode(this.refs.formDonationDescription).value;
+      let date = new Date();
 
       this.request = {
         cPhone: ReactDOM.findDOMNode(this.refs.formDonationPhone).value,
         amount: amount,
         sPhone: ReactDOM.findDOMNode(this.refs.formDonationShelter).value,
-        nameToCredit: (nameToCredit === "") ? "Anonymous" : nameToCredit,
-        description: (description === "") ? null : description
+        name: (nameToCredit === "") ? "Anonymous" : nameToCredit,
+        message: (description === "") ? null : description,
+        date: date.toISOString()
       };
 
       console.log("Request for DonationForm");
       console.log(this.request);
 
-      /** TODO: This request is missing the fields:
-       * - Date
-       * - TransactionID
-       * Handle these two fields in the back-end.
-       */
-
-      // TODO: Send request to back-end
+      await PetsApi.createDonation(this.request).then(
+          res => {
+            console.log(res);
+          }
+      )
     }
   }
 
@@ -487,7 +490,7 @@ class DeleteDonation extends React.Component {
   /**
    *  Handle submission event by making request to back-end API
    */
-  handleSubmit(event) {
+  async handleSubmit(event) {
     const form = event.currentTarget;
 
     event.preventDefault();
@@ -497,14 +500,15 @@ class DeleteDonation extends React.Component {
     } else {
       this.setState({ validated: true });
 
-      this.request = {
-        transactionID: ReactDOM.findDOMNode(this.refs.formDeleteDonationID).value,
-      };
+      let transactionID = ReactDOM.findDOMNode(this.refs.formDeleteDonationID).value;
 
-      console.log("Request for DeleteDonation");
-      console.log(this.request);
+      console.log("Request for DeleteDonation.  ID: " + transactionID);
 
-      // TODO: Make back-end request
+      await PetsApi.deleteDonation(transactionID).then(
+          res => {
+            console.log(res);
+          }
+      )
     }
   }
 
@@ -518,7 +522,7 @@ class DeleteDonation extends React.Component {
         >
           <Form.Group>
             <Form.Label>Transaction ID</Form.Label>
-            <Form.Control ref="formDeleteDonationID" type="text" placeholder="Enter transaction ID" required/>
+            <Form.Control ref="formDeleteDonationID" type="number" placeholder="Enter transaction ID" required/>
           </Form.Group>
           <Button type="submit">Delete Donation</Button>
         </Form>

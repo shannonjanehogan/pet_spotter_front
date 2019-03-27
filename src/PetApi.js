@@ -21,7 +21,7 @@ class PetsApi {
     }
   }
 
-  async createDonation(data) {
+  static async createDonation(data) {
     try {
       const response = await axios.post(`${ROOT_URL}/donations`, {
         data
@@ -32,7 +32,7 @@ class PetsApi {
     }
   }
 
-  async deleteDonation(donation_id) {
+  static async deleteDonation(donation_id) {
     try {
       const response = await axios.delete(`${ROOT_URL}/donations/${donation_id}`);
       return response.data;
@@ -41,9 +41,9 @@ class PetsApi {
     }
   }
 
-  async updateClient(data) {
+  static async updateClient(clientId, data) {
     try {
-      const response = await axios.put(`${ROOT_URL}/client/${data.id}`, {
+      const response = await axios.put(`${ROOT_URL}/client/${clientId}`, {
         data
       });
       return response.data;

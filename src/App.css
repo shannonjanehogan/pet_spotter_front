@@ -97,3 +97,13 @@ Table {
 .tax-receipt-text h3 {
   text-decoration: underline;
 }
+
+/* Other success responses */
+
+.text-success {
+  display: none;
+  text-align: center;
+  font-weight: bold;
+  vertical-align: center;
+  color: green;
+}

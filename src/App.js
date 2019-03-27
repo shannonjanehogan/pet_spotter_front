@@ -67,80 +67,98 @@ class ClientInfoForm extends React.Component {
       await PetsApi.updateClient(cPhone, this.request).then(
           res => {
             console.log(res);
+            this.renderResponse(res);
           }
       )
+    }
+  }
+
+  /**
+   * Handle and render response
+   * @param response
+   */
+  renderResponse(response) {
+    console.log(response);
+    if (response) {
+      ReactDOM.findDOMNode(this.refs.clientInfoTextSuccess).style = "display: block";
     }
   }
 
   render() {
     const { validated } = this.state;
     return(
-        <Form
-            noValidate
-            validated={validated}
-            onSubmit={e => this.handleSubmit(e)}
-        >
-          <Form.Row>
-            <Form.Group as={Col}>
-              <Form.Label>Phone number</Form.Label>
-              <Form.Control ref="formClientPhone" type="phone-number" placeholder="7785555555" required/>
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>Name</Form.Label>
-              <Form.Control ref="formClientName" type="name" placeholder="John Smith" required/>
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>Email address</Form.Label>
-              <Form.Control ref="formClientEmail" type="email" placeholder="me@example.com" required/>
-            </Form.Group>
-          </Form.Row>
+        <div>
+          <Form
+              noValidate
+              validated={validated}
+              onSubmit={e => this.handleSubmit(e)}
+          >
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>Phone number</Form.Label>
+                <Form.Control ref="formClientPhone" type="phone-number" placeholder="7785555555" required/>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Name</Form.Label>
+                <Form.Control ref="formClientName" type="name" placeholder="John Smith" required/>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Email address</Form.Label>
+                <Form.Control ref="formClientEmail" type="email" placeholder="me@example.com" required/>
+              </Form.Group>
+            </Form.Row>
 
-          <Form.Row>
-            <Form.Group as={Col}>
-              <Form.Label>House number</Form.Label>
-              <Form.Control ref="formClientHouseNumber" type="number" placeholder="Enter house number" required/>
-            </Form.Group>
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>House number</Form.Label>
+                <Form.Control ref="formClientHouseNumber" type="number" placeholder="Enter house number" required/>
+              </Form.Group>
 
-            <Form.Group as={Col}>
-              <Form.Label>Street</Form.Label>
-              <Form.Control ref="formClientStreetName" type="street" placeholder="Enter street name" required/>
-            </Form.Group>
-          </Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>Street</Form.Label>
+                <Form.Control ref="formClientStreetName" type="street" placeholder="Enter street name" required/>
+              </Form.Group>
+            </Form.Row>
 
-          <Form.Row>
-            <Form.Group as={Col}>
-              <Form.Label>City</Form.Label>
-              <Form.Control ref="formClientCity" type="name" placeholder="Vancouver" required/>
-            </Form.Group>
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>City</Form.Label>
+                <Form.Control ref="formClientCity" type="name" placeholder="Vancouver" required/>
+              </Form.Group>
 
-            <Form.Group as={Col}>
-              <Form.Label>Province</Form.Label>
-              <Form.Control ref="formClientProvince" as="select" required>
-                <option value={null}>{}</option>
-                <option value={"BC"}>BC</option>
-                <option value={"AB"}>AB</option>
-                <option value={"ON"}>ON</option>
-                <option value={"NL"}>NL</option>
-                <option value={"PE"}>PE</option>
-                <option value={"NS"}>NS</option>
-                <option value={"NB"}>NB</option>
-                <option value={"QC"}>QC</option>
-                <option value={"MB"}>MB</option>
-                <option value={"SK"}>SK</option>
-                <option value={"YT"}>YT</option>
-                <option value={"NT"}>NT</option>
-                <option value={"NU"}>NU</option>
-              </Form.Control>
-            </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Province</Form.Label>
+                <Form.Control ref="formClientProvince" as="select" required>
+                  <option value={null}>{}</option>
+                  <option value={"BC"}>BC</option>
+                  <option value={"AB"}>AB</option>
+                  <option value={"ON"}>ON</option>
+                  <option value={"NL"}>NL</option>
+                  <option value={"PE"}>PE</option>
+                  <option value={"NS"}>NS</option>
+                  <option value={"NB"}>NB</option>
+                  <option value={"QC"}>QC</option>
+                  <option value={"MB"}>MB</option>
+                  <option value={"SK"}>SK</option>
+                  <option value={"YT"}>YT</option>
+                  <option value={"NT"}>NT</option>
+                  <option value={"NU"}>NU</option>
+                </Form.Control>
+              </Form.Group>
 
-            <Form.Group as={Col}>
-              <Form.Label>Postal Code</Form.Label>
-              <Form.Control ref="formClientPostalCode" type="postal-code" placeholder="A1A 1A1" required/>
-            </Form.Group>
-          </Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>Postal Code</Form.Label>
+                <Form.Control ref="formClientPostalCode" type="postal-code" placeholder="A1A 1A1" required/>
+              </Form.Group>
+            </Form.Row>
 
-          <Button type="submit">Add/Update Info</Button>
-        </Form>
+            <Button type="submit">Add/Update Info</Button>
+          </Form>
+
+          <div className={"text-success"} ref={"clientInfoTextSuccess"}>
+            <p>Info successfully updated!</p>
+          </div>
+        </div>
     );
   }
 }
@@ -187,50 +205,68 @@ class DonationForm extends React.Component {
       await PetsApi.createDonation(this.request).then(
           res => {
             console.log(res);
+            this.renderResponse(res);
           }
       )
+    }
+  }
+
+  /**
+   * Handle and render response
+   * @param response
+   */
+  renderResponse(response) {
+    console.log(response);
+    if (response) {
+      ReactDOM.findDOMNode(this.refs.donationTextSuccess).style = "display: block";
     }
   }
 
   render() {
     const { validated } = this.state;
     return(
-        <Form
-            noValidate
-            validated={validated}
-            onSubmit={e => this.handleSubmit(e)}
-        >
-          <Form.Row>
-            <Form.Group as={Col}>
-              <Form.Label>Phone number</Form.Label>
-              <Form.Control ref="formDonationPhone" type="phone-number" placeholder="7785555555" required/>
+        <div>
+          <Form
+              noValidate
+              validated={validated}
+              onSubmit={e => this.handleSubmit(e)}
+          >
+            <Form.Row>
+              <Form.Group as={Col}>
+                <Form.Label>Phone number</Form.Label>
+                <Form.Control ref="formDonationPhone" type="phone-number" placeholder="7785555555" required/>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Amount</Form.Label>
+                <Form.Control ref="formDonationAmount" type="text" placeholder="20.00" required/>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Name to credit</Form.Label>
+                <Form.Control ref="formDonationNameToCredit" type="name" placeholder="Anonymous"/>
+              </Form.Group>
+            </Form.Row>
+            <Form.Group>
+              <Form.Label>Choose a shelter to donate to</Form.Label>
+              <Form.Control ref="formDonationShelter" as="select" required>
+                <option value={null}>{}</option>
+                <option value={BROADWAY_WEST_PHONE}>Broadway West</option>
+                <option value={RICHMOND_SOUTH_PHONE}>Richmond South</option>
+                <option value={BURNABY_PHONE}>Burnaby</option>
+                <option value={DELTA_PHONE}>Delta</option>
+                <option value={SURREY_SOUTH_PHONE}>Surrey South</option>
+              </Form.Control>
             </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>Amount</Form.Label>
-              <Form.Control ref="formDonationAmount" type="text" placeholder="20.00" required/>
+            <Form.Group>
+              <Form.Label>Description</Form.Label>
+              <Form.Control ref="formDonationDescription" as="textarea" rows="3" placeholder="Write a friendly message here!" defaultValue={null}/>
             </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>Name to credit</Form.Label>
-              <Form.Control ref="formDonationNameToCredit" type="name" placeholder="Anonymous"/>
-            </Form.Group>
-          </Form.Row>
-          <Form.Group>
-            <Form.Label>Choose a shelter to donate to</Form.Label>
-            <Form.Control ref="formDonationShelter" as="select" required>
-              <option value={null}>{}</option>
-              <option value={BROADWAY_WEST_PHONE}>Broadway West</option>
-              <option value={RICHMOND_SOUTH_PHONE}>Richmond South</option>
-              <option value={BURNABY_PHONE}>Burnaby</option>
-              <option value={DELTA_PHONE}>Delta</option>
-              <option value={SURREY_SOUTH_PHONE}>Surrey South</option>
-            </Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Description</Form.Label>
-            <Form.Control ref="formDonationDescription" as="textarea" rows="3" placeholder="Write a friendly message here!" defaultValue={null}/>
-          </Form.Group>
-          <Button type="submit">Donate!</Button>
-        </Form>
+            <Button type="submit">Donate!</Button>
+          </Form>
+
+          <div className={"text-success"} ref={"donationTextSuccess"}>
+            <p>Thank you!  We've successfully received your donation.</p>
+          </div>
+        </div>
     );
   }
 }
@@ -507,25 +543,43 @@ class DeleteDonation extends React.Component {
       await PetsApi.deleteDonation(transactionID).then(
           res => {
             console.log(res);
+            this.renderResponse(res);
           }
       )
+    }
+  }
+
+  /**
+   * Handle and render response
+   * @param response
+   */
+  renderResponse(response) {
+    console.log(response);
+    if (response) {
+      ReactDOM.findDOMNode(this.refs.deleteDonationTextSuccess).style = "display: block";
     }
   }
 
   render() {
     const { validated } = this.state;
     return(
-        <Form
-            noValidate
-            validated={validated}
-            onSubmit={e => this.handleSubmit(e)}
-        >
-          <Form.Group>
-            <Form.Label>Transaction ID</Form.Label>
-            <Form.Control ref="formDeleteDonationID" type="number" placeholder="Enter transaction ID" required/>
-          </Form.Group>
-          <Button type="submit">Delete Donation</Button>
-        </Form>
+        <div>
+          <Form
+              noValidate
+              validated={validated}
+              onSubmit={e => this.handleSubmit(e)}
+          >
+            <Form.Group>
+              <Form.Label>Transaction ID</Form.Label>
+              <Form.Control ref="formDeleteDonationID" type="number" placeholder="Enter transaction ID" required/>
+            </Form.Group>
+            <Button type="submit">Delete Donation</Button>
+          </Form>
+
+          <div className={"text-success"} ref={"deleteDonationTextSuccess"}>
+            <p>Successfully deleted a donation.</p>
+          </div>
+        </div>
     );
   }
 }

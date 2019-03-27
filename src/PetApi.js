@@ -51,7 +51,7 @@ class PetsApi {
     }
   }
 
-  async getAnimalPickups() {
+  async getPickupTimes() {
     try {
       const response = await axios.get('http://127.0.0.1:8080/animalpickups');
       return response.data;
@@ -69,7 +69,7 @@ class PetsApi {
     }
   }
 
-  async getDonations() {
+  async getDonationsByShelter() {
     try {
       const response = await axios.get('http://127.0.0.1:8080/donations');
       return response.data;
@@ -78,7 +78,7 @@ class PetsApi {
     }
   }
 
-  async getDonors() {
+  async getPreferredDonors() {
     try {
       const response = await axios.get('http://127.0.0.1:8080/donors');
       return response.data;

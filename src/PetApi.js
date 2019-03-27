@@ -22,6 +22,7 @@ class PetsApi {
   }
 
   static async createDonation(data) {
+    console.log(data);
     try {
       const response = await axios.post(`${ROOT_URL}/donations`, {
         data

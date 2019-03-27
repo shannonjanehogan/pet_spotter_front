@@ -9,6 +9,7 @@ class PetsApi {
       return response.data;
     } catch (error) {
       console.error(error);
+      return error;
     }
   }
 
@@ -18,6 +19,7 @@ class PetsApi {
       return response.data;
     } catch (error) {
       console.error(error);
+      return error;
     }
   }
 
@@ -30,6 +32,7 @@ class PetsApi {
       return response.data;
     } catch (error) {
       console.error(error);
+      return error;
     }
   }
 
@@ -39,6 +42,7 @@ class PetsApi {
       return response.data;
     } catch (error) {
       console.error(error);
+      return error;
     }
   }
 
@@ -50,6 +54,7 @@ class PetsApi {
       return response.data;
     } catch (error) {
       console.error(error);
+      return error;
     }
   }
 
@@ -59,6 +64,7 @@ class PetsApi {
       return response.data;
     } catch (error) {
       console.error(error);
+      return error;
     }
   }
 
@@ -68,6 +74,7 @@ class PetsApi {
       return response.data;
     } catch (error) {
       console.error(error);
+      return error;
     }
   }
 
@@ -77,6 +84,7 @@ class PetsApi {
       return response.data;
     } catch (error) {
       console.error(error);
+      return error;
     }
   }
 
@@ -86,6 +94,7 @@ class PetsApi {
       return response.data;
     } catch (error) {
       console.error(error);
+      return error;
     }
   }
 }

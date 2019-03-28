@@ -510,6 +510,77 @@ class ViewPetsByShelter extends React.Component {
   }
 }
 
+class ViewSheltersAve extends React.Component {
+  constructor(...args) {
+    super(...args);
+    this.state = {
+      data: []
+    };
+  }
+
+  /**
+   *  Handle submission event by making request to back-end API
+   */
+  async handleSubmit(e) {
+    e.preventDefault();
+
+    console.log("Request for ViewSheltersAve");
+
+    await PetsApi.getSheltersAve().then(
+        res => {
+          this.renderResponse(res);
+        }
+    );
+  }
+
+  /**
+   * Handle and render response
+   * @param response
+   */
+  renderResponse(response) {
+    console.log(response);
+    if (response) {
+      this.setState({data: response});
+      ReactDOM.findDOMNode(this.refs.tableSheltersAve).style = "display: table";
+    }
+  }
+
+  render() {
+    return(
+        <div>
+          <Form onSubmit={e => this.handleSubmit(e)}>
+            <Button type="submit">See shelters with "Ave" in their address</Button>
+          </Form>
+
+          <Table ref={"tableSheltersAve"} striped hover>
+            <thead>
+            <tr>
+              <th>Shelter Name</th>
+              <th>Email</th>
+              <th>Phone number</th>
+              <th>Capacity</th>
+              <th>House number</th>
+              <th>Street</th>
+            </tr>
+            </thead>
+            <tbody>{this.state.data.map(function(item, key) {
+              return (
+                  <tr key = {key}>
+                    <td>{item.sname.trim()}</td>
+                    <td>{item.semail.trim()}</td>
+                    <td>{item.sphone}</td>
+                    <td>{item.capacity}</td>
+                    <td>{item.gender}</td>
+                    <td>{item.houseno}</td>
+                    <td>{item.sstreet.trim()}</td>
+                  </tr>
+              )
+            })}</tbody>
+          </Table>
+        </div>
+    );
+  }
+}
 
 
 ///////////////////////
@@ -951,6 +1022,9 @@ class OwnerModal extends React.Component {
               </Tab>
               <Tab eventKey="owner-info" title="Update info">
                 <ClientInfoForm/>
+              </Tab>
+              <Tab eventKey="shelters-ave" title="Shelters with 'Ave'">
+                <ViewSheltersAve/>
               </Tab>
             </Tabs>
           </Modal.Body>

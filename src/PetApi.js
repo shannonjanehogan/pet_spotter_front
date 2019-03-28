@@ -100,9 +100,8 @@ class PetsApi {
 
   static async getSheltersAve() {
     try {
-      // TODO: Confirm endpoint
-      //const response = await axios.get(`${ROOT_URL}/something`);
-      //return response.data;
+      const response = await axios.get(`${ROOT_URL}/shelters`);
+      return response.data;
       return [];
     } catch (error) {
       console.error(error);

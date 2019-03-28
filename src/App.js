@@ -570,8 +570,7 @@ class ViewSheltersAve extends React.Component {
                     <td>{item.semail.trim()}</td>
                     <td>{item.sphone}</td>
                     <td>{item.capacity}</td>
-                    <td>{item.gender}</td>
-                    <td>{item.houseno}</td>
+                    <td>{item.shouseno}</td>
                     <td>{item.sstreet.trim()}</td>
                   </tr>
               )
